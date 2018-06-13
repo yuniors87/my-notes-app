@@ -1,5 +1,5 @@
 const keys = {
-  mongo: 'this is for mongo´s connection'
+  mongo: 'this is for mongo´s conncfection'
 };
 
 module.exports = keys;
