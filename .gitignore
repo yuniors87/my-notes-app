@@ -3,7 +3,7 @@
 # dependencies
 /node_modules
 /server/node_modules
-./server/private.js
+/server/private.js
 
 # testing
 /coverage
