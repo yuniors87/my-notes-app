@@ -3,7 +3,6 @@
 # dependencies
 /node_modules
 /server/node_modules
-/server/private.js
 
 # testing
 /coverage
@@ -23,3 +22,4 @@ yarn-debug.log*
 yarn-error.log*
 
 /src/Config
+server/private.js
