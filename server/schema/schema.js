@@ -1,20 +1,7 @@
 const graphql = require('graphql');
 const _ = require('lodash');
-
-let empresas = [
-  { id: '1', nombre: 'Emprsa 01' },
-  { id: '2', nombre: 'Emprsa 02' },
-  { id: '3', nombre: 'Emprsa 03' }
-];
-
-let sistemas = [
-  { id: '11', nombre: 'Sistema 01', empresaId: '1' },
-  { id: '12', nombre: 'Sistema 02', empresaId: '1' },
-  { id: '13', nombre: 'Sistema 03', empresaId: '2' },
-  { id: '14', nombre: 'Sistema 04', empresaId: '1' },
-  { id: '15', nombre: 'Sistema 05', empresaId: '3' },
-  { id: '16', nombre: 'Sistema 06', empresaId: '3' }
-];
+const Empresa = require('../models/empresas');
+const Sistema = require('../models/sistemas');
 
 const {
   GraphQLObjectType,
@@ -32,7 +19,7 @@ const EmpresaType = new GraphQLObjectType({
     sistemas: {
       type: new GraphQLList(SistemaType),
       resolve(parent, args) {
-        return _.filter(sistemas, { empresaId: parent.id });
+        // return _.filter(sistemas, { empresaId: parent.id });
       }
     }
   })
@@ -46,7 +33,7 @@ const SistemaType = new GraphQLObjectType({
     empresa: {
       type: EmpresaType,
       resolve(parent, args) {
-        return _.find(empresas, { id: parent.empresaId });
+        // return _.find(empresas, { id: parent.empresaId });
       }
     }
   })
@@ -59,7 +46,7 @@ const RootQuery = new GraphQLObjectType({
       type: EmpresaType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return _.find(empresas, { id: args.id });
+        // return _.find(empresas, { id: args.id });
       }
     },
     empresas: {
@@ -72,7 +59,7 @@ const RootQuery = new GraphQLObjectType({
       type: SistemaType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return _.find(sistemas, { id: args.id });
+        // return _.find(sistemas, { id: args.id });
       }
     },
     sistemas: {
@@ -84,6 +71,39 @@ const RootQuery = new GraphQLObjectType({
   }
 });
 
+const Mutation = new GraphQLObjectType({
+  name: 'Mutation',
+  fields: {
+    addEmpresa: {
+      type: EmpresaType,
+      args: {
+        nombre: { type: GraphQLString }
+      },
+      resolve(parent, args) {
+        let empresa = new Empresa({
+          nombre: args.nombre
+        });
+        return empresa.save();
+      }
+    },
+    addSistema: {
+      type: SistemaType,
+      args: {
+        nombre: { type: GraphQLString },
+        empresaId: { type: GraphQLID }
+      },
+      resolve(parent, args) {
+        let sistema = new Sistema({
+          nombre: args.nombre,
+          empresaId: args.empresaId
+        });
+        return sistema.save();
+      }
+    }
+  }
+});
+
 module.exports = new GraphQLSchema({
-  query: RootQuery
+  query: RootQuery,
+  mutation: Mutation
 });
